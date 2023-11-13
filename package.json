@@ -1,0 +1,19 @@
+{
+  "name": "file-store-csv-example",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.3.0",
+    "@subsquid/archive-registry": "^3.3.0",
+    "@subsquid/bigquery-store": "^0.1.1",
+    "@subsquid/evm-processor": "^1.8.5",
+    "@subsquid/evm-typegen": "3.2.3",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "typechain": "^8.3.2",
+    "typescript": "~5.2.2"
+  }
+}
