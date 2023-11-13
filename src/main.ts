@@ -1,3 +1,4 @@
+import {assertNotNull} from '@subsquid/util-internal'
 import * as erc20abi from './abi/erc20'
 import {BigQuery} from '@google-cloud/bigquery'
 import {
@@ -9,9 +10,13 @@ import {
 
 import {processor, USDC_CONTRACT} from './processor'
 
+assertNotNull(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'Please define GOOGLE_APPLICATION_CREDENTIALS. See https://cloud.google.com/docs/authentication/application-default-credentials#GAC')
+const projectId = assertNotNull(process.env.GOOGLE_PROJECT_ID, 'Please define the GOOGLE_PROJECT_ID env variable')
+const datasetId = assertNotNull(process.env.GOOGLE_DATASET_ID, 'Please define the GOOGLE_DATASET_ID env variable')
+
 const db = new Database({
 	bq: new BigQuery(), // set GOOGLE_APPLICATION_CREDENTIALS at .env
-	dataset: 'subsquid-datasets.test_dataset',
+	dataset: `${projectId}.${datasetId}`,
 	tables: {
 		TransfersTable: new Table(
 			'transfers',
