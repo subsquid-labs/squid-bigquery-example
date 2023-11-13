@@ -1,27 +1,21 @@
-# A squid that saves USDC Transfers to TSV files
+# A squid that saves USDC Transfers to a BigQuery dataset
 
-This tiny blockchain indexer scrapes `Transfer` events emitted by the [USDC contract](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48) and saves the data in a file-based dataset in a local folder `./data`. It is built with the [Subsquid framework](https://subsquid.io), hence the term "squid".
+This tiny blockchain indexer scrapes `Transfer` events emitted by the [USDC contract](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48) and saves the data to a dataset on [Google BigQuery](https://cloud.google.com/bigquery).
 
-The squid uses [`@subsquid/file-store`](https://docs.subsquid.io/basics/store/file-store/) and [`@subsquid/file-store-csv`](https://docs.subsquid.io/basics/store/file-store/csv-table/) packages to store the dataset. A less common _tab separated values_ (TSV) format was chosen to highlight the flexibility of the CSV writing subsystem.
+**Dependencies:** NodeJS, Git, [Squid CLI](https://docs.subsquid.io/squid-cli).
 
-Dependencies: NodeJS, [Squid CLI](https://docs.subsquid.io/squid-cli).
-
-To see it in action, spin up a *processor*, a process that ingests the data from the Ethereum Archive:
-
+To try it out, first download it and install local dependencies:
 ```bash
-$ git clone https://github.com/subsquid-labs/file-store-csv-example
-$ cd file-store-csv-example/
-$ npm i
-$ sqd process
+git clone https://github.com/subsquid-labs/squid-bigquery-example
+cd squid-bigquery-example
+npm ci
 ```
-You should see a `./data` folder populated with indexer data appear in a bit:
+then populate the `.env` file and execute
 ```bash
-$ tree ./data/
-./data/
-├── 0000000000-0007242369
-│   └── transfers.tsv
-├── 0007242370-0007638609
-│   └── transfers.tsv
-...
-└── status.txt
+sqd process
 ```
+Make sure to use an ID of an existing dataset for `GOOGLE_DATASET_ID`!
+
+If you visit [the console](https://console.cloud.google.com/bigquery) now you should see that the two new tables `status` and `transfers` have been created and are being populated within your dataset.
+
+Visit [the documentation page](https://docs.subsquid.io/store/bigquery-store/) for more details on using squids with BigQuery.
