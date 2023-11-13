@@ -4,7 +4,13 @@ version: 1
 description: A squid that indexes USDC Transfer events and saves the resulting data locally
 build: 
 deploy:
+  secrets:
+    - GOOGLE_PROJECT_ID
+    - GOOGLE_DATASET_ID
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_EMAIL
+    - GOOGLE_PRIVATE_KEY
   processor:
     cmd:
-      - node
-      - lib/processor
+      - sqd
+      - process:prod

@@ -10,12 +10,21 @@ import {
 
 import {processor, USDC_CONTRACT} from './processor'
 
-assertNotNull(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'Please define GOOGLE_APPLICATION_CREDENTIALS. See https://cloud.google.com/docs/authentication/application-default-credentials#GAC')
 const projectId = assertNotNull(process.env.GOOGLE_PROJECT_ID, 'Please define the GOOGLE_PROJECT_ID env variable')
 const datasetId = assertNotNull(process.env.GOOGLE_DATASET_ID, 'Please define the GOOGLE_DATASET_ID env variable')
+const privateKey = assertNotNull(process.env.GOOGLE_PRIVATE_KEY, 'Please define the GOOGLE_PRIVATE_KEY env variable')
+
+const bq = new BigQuery({
+	projectId,
+	credentials: {
+		client_id: assertNotNull(process.env.GOOGLE_CLIENT_ID, 'Please define the GOOGLE_CLIENT_ID env variable'),
+		client_email: assertNotNull(process.env.GOOGLE_CLIENT_EMAIL, 'Please define the GOOGLE_CLIENT_EMAIL env variable'),
+		private_key: privateKey.replace(/\\n/g, '\n')
+	}
+})
 
 const db = new Database({
-	bq: new BigQuery(), // set GOOGLE_APPLICATION_CREDENTIALS at .env
+	bq,
 	dataset: `${projectId}.${datasetId}`,
 	tables: {
 		TransfersTable: new Table(
