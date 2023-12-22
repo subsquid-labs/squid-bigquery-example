@@ -7,4 +7,9 @@ deploy:
   processor:
     cmd:
       - node
-      - lib/processor
+      - lib/main
+    env:
+      GAC_JSON_FILE: ${{ secrets.GAC_JSON_FILE }}
+      GOOGLE_APPLICATION_CREDENTIALS: google_application_credentials.json
+      GOOGLE_PROJECT_ID: subsquid-datasets
+      GOOGLE_DATASET_ID: test_dataset

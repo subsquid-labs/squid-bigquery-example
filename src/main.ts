@@ -1,3 +1,4 @@
+import fs from 'fs'
 import {assertNotNull} from '@subsquid/util-internal'
 import * as erc20abi from './abi/erc20'
 import {BigQuery} from '@google-cloud/bigquery'
@@ -7,10 +8,20 @@ import {
 	Types,
 	Database
 } from '@subsquid/bigquery-store'
+import {createLogger} from '@subsquid/logger'
 
 import {processor, USDC_CONTRACT} from './processor'
 
-assertNotNull(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'Please define GOOGLE_APPLICATION_CREDENTIALS. See https://cloud.google.com/docs/authentication/application-default-credentials#GAC')
+// Uncomment the section below and define a GAC_JSON_FILE secret when deploying to Subsquid Cloud
+// See https://docs.subsquid.io/sdk/resources/persisting-data/bigquery/#deploying-to-subsquid-cloud
+/*
+assertNotNull(process.env.GAC_JSON_FILE, 'Please define GAC_JSON_FILE. See https://cloud.google.com/docs/authentication/application-default-credentials#GAC')
+let logger = createLogger('creds')
+logger.info('Attempting to write the credentials JSON')
+fs.writeFileSync('google_application_credentials.json', process.env.GAC_JSON_FILE!)
+logger.info('Wrote the creds')
+*/
+
 const projectId = assertNotNull(process.env.GOOGLE_PROJECT_ID, 'Please define the GOOGLE_PROJECT_ID env variable')
 const datasetId = assertNotNull(process.env.GOOGLE_DATASET_ID, 'Please define the GOOGLE_DATASET_ID env variable')
 
