@@ -8,8 +8,8 @@
     "@google-cloud/bigquery": "^7.3.0",
     "@subsquid/archive-registry": "^3.3.0",
     "@subsquid/bigquery-store": "^0.1.1",
-    "@subsquid/evm-processor": "^1.8.5",
-    "@subsquid/evm-typegen": "3.2.3",
+    "@subsquid/evm-processor": "^1.14.1",
+    "@subsquid/evm-typegen": "3.3.0",
     "dotenv": "^16.3.1",
     "ethers": "^6.8.1"
   },
