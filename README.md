@@ -8,7 +8,7 @@ To try it out, first download it and install local dependencies:
 ```bash
 git clone https://github.com/subsquid-labs/squid-bigquery-example
 cd squid-bigquery-example
-npm ci
+npm i
 ```
 then populate the `.env` file and execute
 ```bash
