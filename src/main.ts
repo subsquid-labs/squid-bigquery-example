@@ -37,7 +37,11 @@ const db = new Database({
 				value: Column(Types.BigNumeric(38))
 			}
 		)
-	}
+	},
+	// Consider enabling abortAllProjectSessionsOnStartup and setting datasetRegion if you run into
+	// "Transaction is aborted due to concurrent update" errors.
+	// DANGEROUS: using abortAllProjectSessionsOnStartup can lead to data loss in certain setups.
+	// See /sdk/resources/persisting-data/bigquery/#transaction-is-aborted-due-to-concurrent-update
 })
 
 processor.run(db, async (ctx) => {
