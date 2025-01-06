@@ -38,10 +38,12 @@ const db = new Database({
 			}
 		)
 	},
+	//5000 // <- page size for the insert operations on the table. It's optional.
+
 	// Consider enabling abortAllProjectSessionsOnStartup and setting datasetRegion if you run into
 	// "Transaction is aborted due to concurrent update" errors.
 	// DANGEROUS: using abortAllProjectSessionsOnStartup can lead to data loss in certain setups.
-	// See /sdk/resources/persisting-data/bigquery/#transaction-is-aborted-due-to-concurrent-update
+	// See https://docs.sqd.dev/sdk/resources/persisting-data/bigquery/#transaction-is-aborted-due-to-concurrent-update
 })
 
 processor.run(db, async (ctx) => {
