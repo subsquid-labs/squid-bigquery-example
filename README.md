@@ -2,7 +2,7 @@
 
 This tiny blockchain indexer scrapes `Transfer` events emitted by the [USDC contract](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48) and saves the data to a dataset on [Google BigQuery](https://cloud.google.com/bigquery).
 
-**Dependencies:** NodeJS, Git, [Squid CLI](https://docs.subsquid.io/squid-cli).
+**Dependencies:** NodeJS, Git, [Squid CLI](https://docs.sqd.dev/en/sdk).
 
 To try it out, first download it and install local dependencies:
 ```bash
