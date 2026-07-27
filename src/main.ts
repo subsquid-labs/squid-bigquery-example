@@ -1,6 +1,9 @@
 import fs from 'fs'
 import {assertNotNull} from '@subsquid/util-internal'
 import * as erc20abi from './abi/erc20'
+import {run} from '@subsquid/batch-processor'
+import {augmentBlock} from '@subsquid/evm-objects'
+import {DataSourceBuilder} from '@subsquid/evm-stream'
 import {BigQuery} from '@google-cloud/bigquery'
 import {
 	Column,
@@ -10,10 +13,46 @@ import {
 } from '@subsquid/bigquery-store'
 import {createLogger} from '@subsquid/logger'
 
-import {processor, USDC_CONTRACT} from './processor'
+const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'.toLowerCase()
 
-// Uncomment the section below and define a GAC_JSON_FILE secret when deploying to Subsquid Cloud
-// See https://docs.subsquid.io/sdk/resources/persisting-data/bigquery/#deploying-to-subsquid-cloud
+// A DataSourceBuilder defines where to get the data and what data to fetch.
+const dataSource = new DataSourceBuilder()
+	// The SQD Network Portal is the primary source of blockchain data: it is public,
+	// needs no API key, and streams pre-filtered data — including real-time unfinalized
+	// blocks — far faster than a plain RPC endpoint.
+	// Browse the available datasets at https://docs.sqd.ai/subsquid-network/reference/networks/
+	.setPortal('https://portal.sqd.dev/datasets/ethereum-mainnet')
+	// To use a private or rate-limit-lifted Portal, supply an API key
+	// through the HTTP client headers (create a key at https://portal.sqd.dev/app):
+	// .setPortal({
+	//     url: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+	//     http: {
+	//         headers: {'x-api-key': process.env.SQD_API_KEY},
+	//     },
+	// })
+	.setBlockRange({
+		from: 6082465
+	})
+	// Field selection is explicit: there are no default fields, so list every field the
+	// handler reads. See
+	// https://docs.sqd.dev/en/sdk/squid-sdk/evm/reference/evm-stream/field-selection
+	.setFields({
+		log: {
+			address: true,
+			topics: true,
+			data: true
+		}
+	})
+	.addLog({
+		where: {
+			address: [USDC_CONTRACT],
+			topic0: [erc20abi.events.Transfer.topic]
+		}
+	})
+	.build()
+
+// Uncomment the section below and define a GAC_JSON_FILE secret when deploying to SQD Cloud
+// See https://docs.sqd.dev/en/sdk/squid-sdk/evm/reference/data-stores/bigquery
 /*
 assertNotNull(process.env.GAC_JSON_FILE, 'Please define GAC_JSON_FILE. See https://cloud.google.com/docs/authentication/application-default-credentials#GAC')
 let logger = createLogger('creds')
@@ -43,11 +82,14 @@ const db = new Database({
 	// Consider enabling abortAllProjectSessionsOnStartup and setting datasetRegion if you run into
 	// "Transaction is aborted due to concurrent update" errors.
 	// DANGEROUS: using abortAllProjectSessionsOnStartup can lead to data loss in certain setups.
-	// See https://docs.sqd.dev/sdk/resources/persisting-data/bigquery/#transaction-is-aborted-due-to-concurrent-update
+	// See https://docs.sqd.dev/en/sdk/squid-sdk/evm/reference/data-stores/bigquery
 })
 
-processor.run(db, async (ctx) => {
-	for (let block of ctx.blocks) {
+// run() drives the processing loop, passing each batch of data to the handler.
+run(dataSource, db, async (ctx) => {
+	// augmentBlock() enriches raw block items with ids and navigation helpers.
+	const blocks = ctx.blocks.map(augmentBlock)
+	for (let block of blocks) {
 		for (let log of block.logs) {
 			if (log.address===USDC_CONTRACT && log.topics[0]===erc20abi.events.Transfer.topic) {
 				let { from, to, value } = erc20abi.events.Transfer.decode(log)

@@ -18,7 +18,7 @@ Make sure to use an ID of an existing dataset for `GOOGLE_DATASET_ID`!
 
 If you visit [the console](https://console.cloud.google.com/bigquery) now you should see that the two new tables `status` and `transfers` have been created and are being populated within your dataset.
 
-Visit [the documentation page](https://docs.sqd.dev/sdk/resources/persisting-data/bigquery/) for more details on using squids with BigQuery.
+Visit [the documentation page](https://docs.sqd.dev/en/sdk/squid-sdk/evm/reference/data-stores/bigquery) for more details on using squids with BigQuery.
 
 ## Troubleshooting
 
